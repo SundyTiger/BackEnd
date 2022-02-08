@@ -25,18 +25,18 @@ class User {
       };
       const { error } = validateUser.validate(user);
       if (error) {
-        res.json({
+        res.status(400).json({
           message: "Valid Email name And PassWord required",
         });
       } else {
         if (await validateEmail(email)) {
-          res.json({
+          res.status(401).json({
             message: "Entered Email is Already Exists!!!",
           });
         } else {
           const hashedPassword = await bcrypt.hash(password, 10);
           await createUser(email, hashedPassword);
-          res.json({
+          res.status(200).json({
             message: "Registration is SuccessFul",
           });
         }
@@ -61,14 +61,14 @@ class User {
             (await bcrypt.compare(getuser.password, user.PassWord))
           ) {
             console.log("SuccessFul");
-            res.json({
+            res.status(200).json({
               message: "LogIn SuccessFul",
               accessToken: token(getuser),
               accessTime: Date(),
             });
           } else {
             console.error("Error in Login");
-            res.json({
+            res.status(401).json({
               message: "Invalid User Login!!!!",
             });
           }
@@ -91,12 +91,12 @@ class User {
       };
       const { error } = validateUser.validate(user);
       if (error) {
-        res.json({
+        res.status(400).json({
           message: "Does not match PassWord specification",
         });
       } else {
         await updatePassWord(email, hashedPassword);
-        res.json({
+        res.status(200).json({
           message: "Successfully Changed Password",
         });
       }
@@ -117,19 +117,19 @@ class Admin {
       };
       const { error } = validateAdmin.validate(admin);
       if (error) {
-        res.json({
+        res.status(400).json({
           message: "Valid Email name And PassWord required",
         });
         //   console.log(error);
       } else {
         if (await validateAdminEmail(email)) {
-          res.json({
+          res.status(401).json({
             message: "Entered Email is Already Exists!!!",
           });
         } else {
           const hashedPassword = await bcrypt.hash(password, 10);
           await createAdmin(email, hashedPassword);
-          res.json({
+          res.status(200).json({
             message: "Registration is SuccessFul",
           });
         }
@@ -153,7 +153,7 @@ class Admin {
             admin.Email == getadmin.email &&
             (await bcrypt.compare(getadmin.password, admin.PassWord))
           ) {
-            res.json({
+            res.status(200).json({
               message: "LogIn SuccessFul",
               accessToken: tokenAdmin(getadmin),
               accessTime: Date(),
@@ -161,7 +161,7 @@ class Admin {
             // adminValid = { email: getadmin.email };
           } else {
             console.error("Error in Login");
-            res.json({
+            res.status(401).json({
               message: "Invalid Admin Login!!!!",
             });
           }
@@ -184,12 +184,12 @@ class Admin {
       };
       const { error } = validateAdmin.validate(admin);
       if (error) {
-        res.json({
+        res.status(400).json({
           message: "Does not match PassWord specification",
         });
       } else {
         await updateAdminPassWord(email, hashedPassword);
-        res.json({
+        res.status(200).json({
           message: "Successfully Changed Password",
         });
       }

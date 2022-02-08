@@ -16,16 +16,16 @@ class Movies {
     try {
       const movies = await getMovies();
       if (verify(req.token)) {
-        res.json({
+        res.status(200).json({
           movies,
         });
       } else {
-        res.json({
+        res.status(401).json({
           message: "Invalid Token or Token is Expired!!!",
         });
       }
     } catch (e) {
-      res.json({
+      res.status(400).json({
         message: "Token Error",
       });
     }
@@ -38,16 +38,16 @@ class Movies {
       data["Image"] = result.secure_url;
       const movie = await addMovies(data);
       if (verifyAdmin(req.token)) {
-        res.json({
+        res.status(200).json({
           movie,
         });
       } else {
-        res.json({
+        res.status(401).json({
           message: "Invalid Token or Token is Expired!!!",
         });
       }
     } catch (err) {
-      res.json({
+      res.status(400).json({
         message: "Token Error",
       });
     }
@@ -58,16 +58,16 @@ class Series {
     try {
       const serials = await getSerial();
       if (verify(req.token)) {
-        res.json({
+        res.status(200).json({
           serials,
         });
       } else {
-        res.json({
+        res.status(401).json({
           message: "Invalid Token or Token is Expired!!!",
         });
       }
     } catch (err) {
-      res.json({
+      res.status(400).json({
         message: "Token Error",
       });
     }
@@ -80,16 +80,16 @@ class Series {
       data["Image"] = result.secure_url;
       const serials = await addSerial(data);
       if (verifyAdmin(req.token)) {
-        res.json({
+        res.status(200).json({
           serials,
         });
       } else {
-        res.json({
+        res.status(401).json({
           message: "Invalid Token or Token is Expired!!!",
         });
       }
     } catch (err) {
-      res.json({
+      res.status(400).json({
         message: "Token Error",
       });
       console.log(err);
@@ -107,17 +107,17 @@ class Series {
       const seasons = await addSeasons(data);
       const series = await addSeasonsID(name, seasons._id);
       if (verifyAdmin(req.token)) {
-        res.json({
+        res.status(200).json({
           series,
           seasons,
         });
       } else {
-        res.json({
+        res.status(401).json({
           message: "Invalid Token or Token is Expired!!!",
         });
       }
     } catch (err) {
-      res.json({
+      res.status(400).json({
         message: "Token Error",
       });
       console.log(err);
@@ -133,17 +133,17 @@ class Series {
       const episode = await addEpisode(data);
       const season = await addEpisodeID(name, episode._id);
       if (verify(req.token)) {
-        res.json({
+        res.status(200).json({
           episode,
           season,
         });
       } else {
-        res.json({
+        res.status(401).json({
           message: "Invalid Token or Token is Expired!!!",
         });
       }
     } catch (err) {
-      res.json({
+      res.status(400).json({
         message: "Token Error",
       });
       console.log(err);

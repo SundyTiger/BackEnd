@@ -2,6 +2,12 @@ const express = require("express");
 const app = express();
 const multer = require("multer");
 const dotenv = require("dotenv");
+const cors = require("cors");
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
 dotenv.config();
 const { validateToken } = require("./Middleware/tokenVaditaor");
 // const hotStarRoutes = require("./Controller/routes/hotstar.controller");
@@ -18,50 +24,16 @@ const series = require("./Controller/routes/series.controller");
 // const kidsAdmin = require("./Controller/admin/routes/kids.admin");
 const mongoose = require("mongoose");
 // const upload = multer({ dest: "public/files" });
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "public");
-  },
-  filename: (req, file, cb) => {
-    const ext = file.mimetype.split("/")[1];
-    cb(null, `files/admin-${file.fieldname}-${Date.now()}.${ext}`);
-  },
-});
-const multerFilter = (req, file, cb) => {
-  if (file.mimetype.split("/")[1] === "png") {
-    cb(null, true);
-  } else {
-    cb(new Error("Not a png File!!"), false);
-  }
-};
-const upload = multer({
-  storage: multerStorage,
-  fileFilter: multerFilter,
-});
+
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => console.log("Database is Exersicing......."))
   .catch((err) => console.error("Error in Connection" + err));
 // app.use(emailRoutes);
 // app.use(emailAdmin);
+app.use(cors({ corsOptions }));
 app.use(express.json());
 app.use(logInRegister);
-app.post("/api/uploadFile", upload.single("myFile"), (req, res) => {
-  // Stuff to be added later
-  // console.log(req.file);
-  try {
-    let name = req.file.filename;
-    console.log(name);
-    res.status(200).json({
-      status: "success",
-      message: "File created successfully!!",
-    });
-  } catch (error) {
-    res.json({
-      error,
-    });
-  }
-});
 app.use(validateToken);
 
 // app.use("/disneyplushotstar", hotStarRoutes);
