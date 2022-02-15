@@ -5,11 +5,10 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const corsOptions = {
   origin: "http://localhost:3000",
-  credentials: true, //access-control-allow-credentials:true
+  credentials: true,
   optionSuccessStatus: 200,
 };
 dotenv.config();
-const { validateToken } = require("./Middleware/tokenVaditaor");
 // const hotStarRoutes = require("./Controller/routes/hotstar.controller");
 // // const verifyToken = require('./Controller/routes/verify.Controller');
 // const emailRoutes = require("../BackEnd/Controller/routes/emailRoutes.Controller");
@@ -21,6 +20,7 @@ const { validateToken } = require("./Middleware/tokenVaditaor");
 const logInRegister = require("./Controller/routes/logInRegister.controller");
 const movies = require("./Controller/routes/movies.controller");
 const series = require("./Controller/routes/series.controller");
+const payments = require("./Controller/routes/payment.contoroller");
 // const kidsAdmin = require("./Controller/admin/routes/kids.admin");
 const mongoose = require("mongoose");
 // const upload = multer({ dest: "public/files" });
@@ -31,10 +31,10 @@ mongoose
   .catch((err) => console.error("Error in Connection" + err));
 // app.use(emailRoutes);
 // app.use(emailAdmin);
+
 app.use(cors({ corsOptions }));
 app.use(express.json());
 app.use(logInRegister);
-app.use(validateToken);
 
 // app.use("/disneyplushotstar", hotStarRoutes);
 // app.use("/disneyplushotstar/kids", kidsRoutes);
@@ -45,4 +45,5 @@ app.use(validateToken);
 // app.use(verifyToken);
 app.use("/disneyplushotstar", movies);
 app.use("/disneyplushotstar", series);
+app.use("/disneyplushotstar", payments);
 app.listen(3000, () => console.log("Server is Exersicing............."));

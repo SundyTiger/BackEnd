@@ -1,4 +1,4 @@
 module.exports = {
-  secretKey: "We Are Admin",
+  secretKey: "I am Admin",
   algorithm: "HS256", //default: HS256
 };

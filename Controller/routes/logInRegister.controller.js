@@ -2,12 +2,14 @@ const express = require("express");
 const router = express.Router();
 const { User, Admin } = require("../../Domains/login.domains");
 router.use(express.json());
-router.post("/disneyplushotstar/register");
-
 class UserRoutes {
   static async register(req, res) {
     const user = new User();
     user.create(req, res);
+  }
+  static async otpVal(req, res) {
+    const user = new User();
+    user.otpgenerate(req, res);
   }
   static async logIn(req, res) {
     const user = new User();
@@ -33,6 +35,7 @@ class AdminRoutes {
   }
 }
 router.post("/disneyplushotstar/register", UserRoutes.register);
+router.post("/disneyplushotstar/otp", UserRoutes.otpVal);
 router.post("/disneyplushotstar/admin/register", AdminRoutes.register);
 router.post("/disneyplushotstar/login", UserRoutes.logIn);
 router.post("/disneyplushotstar/admin/login", AdminRoutes.logIn);

@@ -1,6 +1,8 @@
 const { token } = require("../Authentication/authorization");
 const { validateUser, validateAdmin } = require("../Validation/validation");
+const { mailData, transport } = require("../utils/nodemailer");
 const bcrypt = require("bcryptjs");
+const fs = require("fs");
 const {
   createUser,
   getUser,
@@ -19,30 +21,63 @@ class User {
     try {
       const email = req.body.email;
       const password = req.body.password;
-      const user = {
-        Email: email,
-        PassWord: password,
-      };
-      const { error } = validateUser.validate(user);
-      if (error) {
-        res.status(400).json({
-          message: "Valid Email name And PassWord required",
-        });
-      } else {
-        if (await validateEmail(email)) {
-          res.status(401).json({
-            message: "Entered Email is Already Exists!!!",
+      const otpcheck = parseInt(req.body.otp);
+      const otporiginal = fs.readFileSync("otp.txt", "utf8");
+      console.log(otporiginal);
+      if (otporiginal == otpcheck) {
+        const user = {
+          Email: email,
+          PassWord: password,
+        };
+        fs.unlinkSync("otp.txt");
+        const { error } = validateUser.validate(user);
+        if (error) {
+          res.status(400).json({
+            message: "Valid Email name And PassWord required",
           });
         } else {
-          const hashedPassword = await bcrypt.hash(password, 10);
-          await createUser(email, hashedPassword);
-          res.status(200).json({
-            message: "Registration is SuccessFul",
-          });
+          if (await validateEmail(email)) {
+            res.status(401).json({
+              message: "Entered Email is Already Exists!!!",
+            });
+          } else {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            await createUser(email, hashedPassword);
+            res.status(200).json({
+              message: "Registration is SuccessFul",
+            });
+          }
         }
+      } else {
+        res.status(401).json({
+          message: "Invalid OTP Entered",
+        });
       }
     } catch (err) {
       console.error("Error in Api" + err);
+    }
+  }
+  async otpgenerate(req, res) {
+    try {
+      const email = req.body.email;
+      if (await validateEmail(email)) {
+        res.status(200).json({
+          message: "OTP is Sent SuccessFully",
+        });
+        fs.writeFileSync("forget.txt", String(otpgen));
+      } else {
+        let otpgen = Math.floor(100000 + Math.random() * 900000);
+        fs.writeFileSync("otp.txt", String(otpgen));
+        const data = mailData(email, otpgen);
+        transport(data);
+        res.status(200).json({
+          message: "OTP is Sent Successfully",
+        });
+      }
+    } catch (e) {
+      res.status(400).json({
+        message: "Bad Request" + e,
+      });
     }
   }
   async logIn(req, res) {
@@ -84,20 +119,35 @@ class User {
     try {
       const email = req.body.email;
       const password = req.body.password;
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const user = {
-        Email: email,
-        PassWord: password,
-      };
-      const { error } = validateUser.validate(user);
-      if (error) {
-        res.status(400).json({
-          message: "Does not match PassWord specification",
-        });
+      const otpcheck = parseInt(req.body.otp);
+      const otporiginal = fs.readFileSync("forget.txt", "utf8");
+      if (await validateEmail(email)) {
+        if (otporiginal == otpcheck) {
+          const hashedPassword = await bcrypt.hash(password, 10);
+          const user = {
+            Email: email,
+            PassWord: password,
+          };
+          fs.writeFileSync("forget.txt", String(otpgen));
+          const { error } = validateUser.validate(user);
+          if (error) {
+            res.status(400).json({
+              message: "Does not match PassWord specification",
+            });
+          } else {
+            await updatePassWord(email, hashedPassword);
+            res.status(200).json({
+              message: "Successfully Changed Password",
+            });
+          }
+        } else {
+          res.status(401).json({
+            message: "You are not Registered User!!!",
+          });
+        }
       } else {
-        await updatePassWord(email, hashedPassword);
-        res.status(200).json({
-          message: "Successfully Changed Password",
+        res.status(401).json({
+          message: "Invalid OTP!!!",
         });
       }
     } catch (err) {

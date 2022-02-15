@@ -15,29 +15,25 @@ class Movies {
   async getAllMovies(req, res) {
     try {
       const movies = await getMovies();
-      if (verify(req.token)) {
-        res.status(200).json({
-          movies,
-        });
-      } else {
-        res.status(401).json({
-          message: "Invalid Token or Token is Expired!!!",
-        });
-      }
+      res.status(200).json({
+        movies,
+      });
     } catch (e) {
       res.status(400).json({
         message: "Token Error",
       });
+      console.log(e);
     }
   }
   async addMovies(req, res, next) {
     try {
       const data = req.body;
+      console.log(req.files);
       const result = await cloudinary.uploader.upload(req.file.path);
       console.log(result);
       data["Image"] = result.secure_url;
-      const movie = await addMovies(data);
       if (verifyAdmin(req.token)) {
+        const movie = await addMovies(data);
         res.status(200).json({
           movie,
         });
@@ -50,6 +46,7 @@ class Movies {
       res.status(400).json({
         message: "Token Error",
       });
+      console.log(err);
     }
   }
 }

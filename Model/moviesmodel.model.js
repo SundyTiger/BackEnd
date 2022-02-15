@@ -1,17 +1,19 @@
 const mongoose = require("mongoose");
 
 const moviesScema = new mongoose.Schema({
+  Title: String,
   Name: String,
   Lenth: String,
   Year: Number,
   Image: String,
   Stream: {
     type: String,
-    enum: ["Disney Plus", "Kids", "HotStar", "Sports"],
+    enum: ["Disney Plus", "Kids", "HotStar", "Sports", "Pixar", "Marvel"],
   },
   Geners: {
     type: String,
     enum: [
+      "Animation",
       "Comedy",
       "Biopic",
       "Drama",
@@ -19,6 +21,8 @@ const moviesScema = new mongoose.Schema({
       "Periodic",
       "Documentary",
       "Horror",
+      "Action",
+      "Superhero",
     ],
   },
   Certified: {

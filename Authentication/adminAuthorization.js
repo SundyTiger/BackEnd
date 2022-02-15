@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const tokenAdmin = (admin) => {
   return jwt.sign(admin, config.secretKey, {
     algorithm: config.algorithm,
-    expiresIn: "40m",
+    expiresIn: "2h",
   });
 };
 const verifyAdmin = (accessToken) => {

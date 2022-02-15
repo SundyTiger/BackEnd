@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Series } = require("../../Domains/user.domains");
+const { validateToken } = require("../../Middleware/tokenVaditaor");
 const upload = require("../../utils/multer");
 class SeriesRoutes {
   static async getAll(req, res) {
@@ -21,10 +22,21 @@ class SeriesRoutes {
   }
 }
 router.get("/serials", SeriesRoutes.getAll);
-router.post("/serials", upload.single("Images"), SeriesRoutes.addSerial);
-router.post("/seasons/:name", upload.single("Images"), SeriesRoutes.addSeason);
+router.post(
+  "/serials",
+  validateToken,
+  upload.single("Images"),
+  SeriesRoutes.addSerial
+);
+router.post(
+  "/seasons/:name",
+  validateToken,
+  upload.single("Images"),
+  SeriesRoutes.addSeason
+);
 router.post(
   "/seasons/episodes/:name",
+  validateToken,
   upload.single("Images"),
   SeriesRoutes.addEpisode
 );
