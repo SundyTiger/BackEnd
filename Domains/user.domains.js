@@ -1,6 +1,7 @@
 const { getMovies, addMovies } = require("../Model/moviesmodel.model");
 const { verify } = require("../Authentication/authorization");
 const { verifyAdmin } = require("../Authentication/adminAuthorization");
+const { validateMovie, validateSeries } = require("../Validation/validation");
 const {
   addEpisode,
   addSeasons,

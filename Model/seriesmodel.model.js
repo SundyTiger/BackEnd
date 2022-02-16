@@ -1,22 +1,18 @@
 const mongoose = require("mongoose");
 
 const episodeSchema = new mongoose.Schema({
-  Name: String,
-  Image: String,
-  Episode: Number,
-  Date: Date,
-  Description: String,
+  Name: { type: String, required: true },
+  Image: { type: String, required: true },
+  Episode: { type: Number, required: true },
+  Date: { type: Date, required: true },
+  Description: { type: String, required: true },
 });
 const seasonSchema = new mongoose.Schema({
-  Name: String,
-  Image: String,
-  Title: String,
-  Season: Number,
-  TotalEpisodes: Number,
-  Stream: {
-    type: String,
-    enum: ["Disney Plus", "HotStar", "Kids", "Sports"],
-  },
+  Name: { type: String, required: true },
+  Image: { type: String, required: true },
+  Title: { type: String, required: true },
+  Season: { type: String, required: true },
+  TotalEpisodes: { type: String, required: true },
   Episodes: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -26,15 +22,21 @@ const seasonSchema = new mongoose.Schema({
 });
 
 const serialSchema = new mongoose.Schema({
-  Name: String,
+  Title: { type: String, required: true },
+  Name: { type: String, required: true },
   Season: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "season",
     },
   ],
-  Image: String,
-  Episodes: Number,
+  Stream: {
+    type: String,
+    enum: ["Disney Plus", "HotStar", "Kids", "Sports"],
+    required: true,
+  },
+  Image: { type: String, required: true },
+  Episodes: { type: Number, required: true },
   Geners: {
     type: String,
     enum: [
@@ -48,6 +50,7 @@ const serialSchema = new mongoose.Schema({
       "Cartoon",
       "Horror",
     ],
+    required: true,
   },
   Language: {
     type: String,
@@ -61,23 +64,25 @@ const serialSchema = new mongoose.Schema({
       "English",
       "Kannada",
     ],
+    required: true,
   },
   Certified: {
     type: String,
     enum: ["U", "U/A", "A"],
+    required: true,
   },
   Description: String,
   Channel: {
     type: String,
     enum: [
-      "hotstar-specials",
-      "quix",
-      "star-jalsa",
-      "star-plus",
-      "star-vijay",
-      "star-bharat",
+      "HotStar Specials",
+      "Quix",
+      "Star Jalsha",
+      "Star Plus",
+      "Star Vijay",
+      "Star Bharat",
       "Asianet",
-      "star-maa",
+      "Star Maa",
       "star-world",
       "hbo-originals",
       "show-time",
@@ -101,6 +106,7 @@ const serialSchema = new mongoose.Schema({
       "star-sports-select-1-hd",
       "star-sports-select-2-hd",
     ],
+    required: true,
   },
 });
 

@@ -60,13 +60,15 @@ class User {
   async otpgenerate(req, res) {
     try {
       const email = req.body.email;
+      let otpgen = Math.floor(100000 + Math.random() * 900000);
       if (await validateEmail(email)) {
+        fs.writeFileSync("forget.txt", String(otpgen));
+        const data = mailData(email, otpgen);
+        transport(data);
         res.status(200).json({
           message: "OTP is Sent SuccessFully",
         });
-        fs.writeFileSync("forget.txt", String(otpgen));
       } else {
-        let otpgen = Math.floor(100000 + Math.random() * 900000);
         fs.writeFileSync("otp.txt", String(otpgen));
         const data = mailData(email, otpgen);
         transport(data);
@@ -98,6 +100,7 @@ class User {
             console.log("SuccessFul");
             res.status(200).json({
               message: "LogIn SuccessFul",
+              user: user,
               accessToken: token(getuser),
               accessTime: Date(),
             });
@@ -121,14 +124,14 @@ class User {
       const password = req.body.password;
       const otpcheck = parseInt(req.body.otp);
       const otporiginal = fs.readFileSync("forget.txt", "utf8");
-      if (await validateEmail(email)) {
-        if (otporiginal == otpcheck) {
+      if (otporiginal == otpcheck) {
+        fs.unlinkSync("forget.txt");
+        if (await validateEmail(email)) {
           const hashedPassword = await bcrypt.hash(password, 10);
           const user = {
             Email: email,
             PassWord: password,
           };
-          fs.writeFileSync("forget.txt", String(otpgen));
           const { error } = validateUser.validate(user);
           if (error) {
             res.status(400).json({
