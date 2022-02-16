@@ -1,14 +1,29 @@
 const mongoose = require("mongoose");
 
 const moviesScema = new mongoose.Schema({
-  Title: String,
-  Name: String,
-  Lenth: String,
-  Year: Number,
-  Image: String,
+  Title: {
+    type: String,
+    required: true,
+  },
+  Name: {
+    type: String,
+    required: true,
+  },
+  Lenth: {
+    type: String,
+    required: true,
+  },
+  Year: {
+    type: Number,
+    required: true,
+  },
+  Image: {
+    type: String,
+  },
   Stream: {
     type: String,
     enum: ["Disney Plus", "Kids", "HotStar", "Sports", "Pixar", "Marvel"],
+    required: true,
   },
   Geners: {
     type: String,
@@ -24,10 +39,12 @@ const moviesScema = new mongoose.Schema({
       "Action",
       "Superhero",
     ],
+    required: true,
   },
   Certified: {
     type: String,
     enum: ["U", "U/A", "A"],
+    required: true,
   },
   Language: {
     type: String,
@@ -41,8 +58,12 @@ const moviesScema = new mongoose.Schema({
       "English",
       "Kannada",
     ],
+    required: true,
   },
-  Description: String,
+  Description: {
+    type: String,
+    required: true,
+  },
 });
 const Movies = mongoose.model("movies", moviesScema);
 const addMovies = async (movie) => {
