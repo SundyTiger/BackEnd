@@ -1,4 +1,8 @@
-const { getMovies, addMovies } = require("../Model/moviesmodel.model");
+const {
+  getMovies,
+  addMovies,
+  filterMovie,
+} = require("../Model/moviesmodel.model");
 const { verify } = require("../Authentication/authorization");
 const { verifyAdmin } = require("../Authentication/adminAuthorization");
 const { validateMovie, validateSeries } = require("../Validation/validation");
@@ -29,10 +33,17 @@ class Movies {
   async addMovies(req, res, next) {
     try {
       const data = req.body;
-      console.log(req.files);
-      const result = await cloudinary.uploader.upload(req.file.path);
-      console.log(result);
-      data["Image"] = result.secure_url;
+      let ImagePath = req.files["Images"][0].path;
+      let newImgPath = ImagePath.replace(/\\/g, "/");
+      let Image = await cloudinary.uploader.upload(newImgPath);
+      let VideoPath = req.files["Video"][0].path;
+      let orgName = req.files["Video"][0].originalname;
+      let newPath = VideoPath.replace(/\\/g, "/");
+      let Video = await cloudinary.uploader.upload(newPath, {
+        resource_type: "video",
+      });
+      data["Image"] = Image.secure_url;
+      data["Video"] = Video.secure_url;
       if (verifyAdmin(req.token)) {
         const movie = await addMovies(data);
         res.status(200).json({
@@ -47,7 +58,19 @@ class Movies {
       res.status(400).json({
         message: "Token Error",
       });
-      console.log(err);
+    }
+  }
+  async filterMovies(req, res) {
+    try {
+      const data = req.body;
+      const filterData = await filterMovie(data);
+      res.status(200).json({
+        filterData,
+      });
+    } catch (e) {
+      res.status(400).json({
+        message: "Filtering Error: " + e,
+      });
     }
   }
 }
@@ -73,9 +96,17 @@ class Series {
   async addSeries(req, res) {
     try {
       const data = req.body;
-      const result = await cloudinary.uploader.upload(req.file.path);
-      console.log(result);
-      data["Image"] = result.secure_url;
+      let ImagePath = req.files["Images"][0].path;
+      let newImgPath = ImagePath.replace(/\\/g, "/");
+      let Image = await cloudinary.uploader.upload(newImgPath);
+      let VideoPath = req.files["Video"][0].path;
+      let orgName = req.files["Video"][0].originalname;
+      let newPath = VideoPath.replace(/\\/g, "/");
+      let Video = await cloudinary.uploader.upload(newPath, {
+        resource_type: "video",
+      });
+      data["Image"] = Image.secure_url;
+      data["Video"] = Video.secure_url;
       const serials = await addSerial(data);
       if (verifyAdmin(req.token)) {
         res.status(200).json({
@@ -97,11 +128,17 @@ class Series {
     try {
       const name = req.params.name;
       const data = req.body;
-      console.log(data);
-      const result = await cloudinary.uploader.upload(req.file.path);
-      console.log(result);
-      data["Image"] = result.secure_url;
-      console.log(data);
+      let ImagePath = req.files["Images"][0].path;
+      let newImgPath = ImagePath.replace(/\\/g, "/");
+      let Image = await cloudinary.uploader.upload(newImgPath);
+      let VideoPath = req.files["Video"][0].path;
+      let orgName = req.files["Video"][0].originalname;
+      let newPath = VideoPath.replace(/\\/g, "/");
+      let Video = await cloudinary.uploader.upload(newPath, {
+        resource_type: "video",
+      });
+      data["Image"] = Image.secure_url;
+      data["Video"] = Video.secure_url;
       const seasons = await addSeasons(data);
       const series = await addSeasonsID(name, seasons._id);
       if (verifyAdmin(req.token)) {
@@ -125,9 +162,12 @@ class Series {
     try {
       const name = req.params.name;
       const data = req.body;
-      const result = await cloudinary.uploader.upload(req.file.path);
-      console.log(result);
-      data["Image"] = result.secure_url;
+      console.log(req.files);
+      const Image = await cloudinary.uploader.upload(req.files["Images"].path);
+      const Video = await cloudinary.uploader.upload(req.files["Video"].path);
+      console.log(Image);
+      data["Image"] = Image.secure_url;
+      data["Video"] = Video.secure_url;
       const episode = await addEpisode(data);
       const season = await addEpisodeID(name, episode._id);
       if (verify(req.token)) {

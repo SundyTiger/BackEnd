@@ -4,6 +4,7 @@ const episodeSchema = new mongoose.Schema({
   Name: { type: String, required: true },
   Image: { type: String, required: true },
   Episode: { type: Number, required: true },
+  Video: { type: String },
   Date: { type: Date, required: true },
   Description: { type: String, required: true },
 });
@@ -12,6 +13,7 @@ const seasonSchema = new mongoose.Schema({
   Image: { type: String, required: true },
   Title: { type: String, required: true },
   Season: { type: String, required: true },
+  Video: { type: String },
   TotalEpisodes: { type: String, required: true },
   Episodes: [
     {
@@ -35,7 +37,8 @@ const serialSchema = new mongoose.Schema({
     enum: ["Disney Plus", "HotStar", "Kids", "Sports"],
     required: true,
   },
-  Image: { type: String, required: true },
+  Image: { type: String },
+  Video: { type: String },
   Episodes: { type: Number, required: true },
   Geners: {
     type: String,

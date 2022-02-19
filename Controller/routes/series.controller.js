@@ -25,19 +25,28 @@ router.get("/serials", SeriesRoutes.getAll);
 router.post(
   "/serials",
   validateToken,
-  upload.single("Images"),
+  upload.fields([
+    { name: "Images", maxCount: 1 },
+    { name: "Video", maxCount: 1 },
+  ]),
   SeriesRoutes.addSerial
 );
 router.post(
   "/seasons/:name",
   validateToken,
-  upload.single("Images"),
+  upload.fields([
+    { name: "Images", maxCount: 1 },
+    { name: "Video", maxCount: 1 },
+  ]),
   SeriesRoutes.addSeason
 );
 router.post(
   "/seasons/episodes/:name",
   validateToken,
-  upload.single("Images"),
+  upload.fields([
+    { name: "Images", maxCount: 1 },
+    { name: "Video", maxCount: 1 },
+  ]),
   SeriesRoutes.addEpisode
 );
 

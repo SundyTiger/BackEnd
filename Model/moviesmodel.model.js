@@ -20,6 +20,9 @@ const moviesScema = new mongoose.Schema({
   Image: {
     type: String,
   },
+  Video: {
+    type: String,
+  },
   Stream: {
     type: String,
     enum: ["Disney Plus", "Kids", "HotStar", "Sports", "Pixar", "Marvel"],
@@ -74,15 +77,12 @@ const getMovies = async () => {
   const showMovies = await Movies.find();
   return showMovies;
 };
-const addImages = async (name, image) => {
-  const addImage = await Movies.findOne({ Name: name });
-  console.log(image);
-  addImage.Image = image.filename;
-  return addImage;
+const filterMovie = async (data) => {
+  const showMovies = await Movies.find(data);
+  return showMovies;
 };
-
 module.exports = {
   getMovies,
   addMovies,
-  addImages,
+  filterMovie,
 };

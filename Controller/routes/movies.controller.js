@@ -13,13 +13,20 @@ class MoviesRoutes {
     const movies = new Movies();
     movies.addMovies(req, res);
   }
+  static async filter(req, res) {
+    const movies = new Movies();
+    movies.filterMovies(req, res);
+  }
 }
 router.get("/movies", MoviesRoutes.getAll);
 router.post(
   "/movies",
   validateToken,
-  upload.single("Images"),
+  upload.fields([
+    { name: "Images", maxCount: 1 },
+    { name: "Video", maxCount: 1 },
+  ]),
   MoviesRoutes.add
 );
-
+router.post("/movies/filter", MoviesRoutes.filter);
 module.exports = router;
