@@ -9,13 +9,8 @@ const dphschema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  isSuper: {
-    type: Boolean,
-    default: false,
-  },
-  isPrime: {
-    type: Boolean,
-    default: false,
+  WatchList: {
+    type: Array,
   },
 });
 const UserPass = mongoose.model("UserInfo", dphschema);
@@ -73,7 +68,37 @@ async function validateEmail(email) {
       return true;
     }
   } catch (err) {
-    console.error("Error in getUser" + err);
+    return "Error in getUser" + err;
+  }
+}
+async function AddToWatchList(email, data) {
+  try {
+    const user = await UserPass.findOne({
+      Email: email,
+    });
+    if (!user["WatchList"].includes(data)) {
+      user["WatchList"].push(data);
+    }
+    return user.save();
+  } catch (e) {
+    console.log("Add to WatchList Error" + e);
+  }
+}
+async function RemoveFromWatchList(email, data) {
+  try {
+    const user = await UserPass.findOne({
+      Email: email,
+    });
+    if (user["WatchList"].includes(data)) {
+      user["WatchList"].filter((name, index) => {
+        if (name == data) {
+          user["WatchList"].splice(index, 1);
+        }
+      });
+    }
+    return user.save();
+  } catch (e) {
+    console.log("Remove From The WatchList" + e);
   }
 }
 module.exports = {
@@ -81,4 +106,6 @@ module.exports = {
   createUser,
   updatePassWord,
   validateEmail,
+  AddToWatchList,
+  RemoveFromWatchList,
 };

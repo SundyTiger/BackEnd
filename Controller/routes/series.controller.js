@@ -32,7 +32,7 @@ router.post(
   SeriesRoutes.addSerial
 );
 router.post(
-  "/seasons/:name",
+  "/seasons/:title",
   validateToken,
   upload.fields([
     { name: "Images", maxCount: 1 },
@@ -41,7 +41,7 @@ router.post(
   SeriesRoutes.addSeason
 );
 router.post(
-  "/seasons/episodes/:name",
+  "/seasons/episodes/:title",
   validateToken,
   upload.fields([
     { name: "Images", maxCount: 1 },

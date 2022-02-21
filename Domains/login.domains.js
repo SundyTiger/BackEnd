@@ -8,6 +8,8 @@ const {
   getUser,
   updatePassWord,
   validateEmail,
+  AddToWatchList,
+  RemoveFromWatchList,
 } = require("../Model/logindata.model");
 const { tokenAdmin } = require("../Authentication/adminAuthorization");
 const {
@@ -16,6 +18,7 @@ const {
   validateAdminEmail,
   updateAdminPassWord,
 } = require("../Model/login.admin");
+const { Console } = require("console");
 class User {
   async create(req, res) {
     try {
@@ -155,6 +158,32 @@ class User {
       }
     } catch (err) {
       console.log("Error in Updating Password");
+    }
+  }
+  async AddToWatch(req, res) {
+    try {
+      const email = req.body.email;
+      const title = req.body.title;
+      const user = await AddToWatchList(email, title);
+      res.status(200).json({
+        user,
+        title,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  async RemoveFromWatch(req, res) {
+    try {
+      const email = req.body.email;
+      const title = req.body.title;
+      const user = await RemoveFromWatchList(email, title);
+      res.status(200).json({
+        user,
+        title,
+      });
+    } catch (e) {
+      console.log(e);
     }
   }
 }

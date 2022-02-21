@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const episodeSchema = new mongoose.Schema({
   Name: { type: String, required: true },
+  Title: { type: String, required: true },
   Image: { type: String, required: true },
   Episode: { type: Number, required: true },
   Video: { type: String },
@@ -14,7 +15,6 @@ const seasonSchema = new mongoose.Schema({
   Title: { type: String, required: true },
   Season: { type: String, required: true },
   Video: { type: String },
-  TotalEpisodes: { type: String, required: true },
   Episodes: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -43,6 +43,7 @@ const serialSchema = new mongoose.Schema({
   Geners: {
     type: String,
     enum: [
+      "Adventure",
       "Talk Show",
       "Comedy",
       "Drama",
@@ -52,6 +53,20 @@ const serialSchema = new mongoose.Schema({
       "Anime",
       "Cartoon",
       "Horror",
+      "Cricket",
+      "Football",
+      "Badminton",
+      "Formula 1",
+      "Kabbadi",
+      "Tennis",
+      "American Football",
+      "eSports",
+      "Formula E",
+      "Martial Arts",
+      "Hockey",
+      "Athletics",
+      "Golf",
+      "Wrestling",
     ],
     required: true,
   },
@@ -78,6 +93,7 @@ const serialSchema = new mongoose.Schema({
   Channel: {
     type: String,
     enum: [
+      "Star Wars",
       "HotStar Specials",
       "Quix",
       "Star Jalsha",
@@ -117,16 +133,25 @@ const Serial = mongoose.model("serial", serialSchema);
 const Season = mongoose.model("season", seasonSchema);
 const Episode = mongoose.model("episodes", episodeSchema);
 const addSerial = async (serial) => {
+  serial["Season"] = [];
   const serials = new Serial(serial);
   return await serials.save();
 };
 const getSerial = async () => {
-  const serials = await Serial.find();
+  const serials = await Serial.find()
+    .populate({
+      path: "Season",
+      populate: {
+        path: "Episodes",
+      },
+    })
+    .find()
+    .populate("Episodes");
   return serials;
 };
-const addSeasonsID = async (name, seasonInfo) => {
+const addSeasonsID = async (title, seasonInfo) => {
   try {
-    const series = await Serial.findOne({ Name: name });
+    const series = await Serial.findOne({ Title: title });
     console.log(series);
     series["Season"].push(seasonInfo);
     return await series.save();
@@ -136,10 +161,12 @@ const addSeasonsID = async (name, seasonInfo) => {
 };
 const addEpisodeID = async (title, episodeId) => {
   const season = await Season.findOne({ Title: title });
-  season.Episodes.push(episodeId);
+  season["Episodes"].push(episodeId);
+
   return await season.save();
 };
 const addSeasons = async (season) => {
+  season["Episodes"] = [];
   const seasons = new Season(season);
   return await seasons.save();
 };
