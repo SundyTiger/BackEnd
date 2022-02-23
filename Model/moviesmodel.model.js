@@ -32,14 +32,17 @@ const moviesScema = new mongoose.Schema({
     type: String,
     enum: [
       "Animation",
+      "Adventure",
+      "Action",
+      "Talk Show",
       "Comedy",
+      "Romance",
       "Biopic",
       "Drama",
-      "Romance",
-      "Periodic",
-      "Documentary",
+      "Reality",
+      "Documentry",
       "Horror",
-      "Action",
+      "Periodic",
       "Superhero",
     ],
     required: true,
@@ -81,8 +84,12 @@ const filterMovie = async (data) => {
   const showMovies = await Movies.find(data);
   return showMovies;
 };
+const filterData = async (data) => {
+  const showData = await Movies.find({ $or: data });
+};
 module.exports = {
   getMovies,
   addMovies,
   filterMovie,
+  filterData,
 };

@@ -17,6 +17,10 @@ class MoviesRoutes {
     const movies = new Movies();
     movies.filterMovies(req, res);
   }
+  static async filterData(req, res) {
+    const movies = new Movies();
+    movies.filterData(req, res);
+  }
 }
 router.get("/movies", MoviesRoutes.getAll);
 router.post(
@@ -29,4 +33,5 @@ router.post(
   MoviesRoutes.add
 );
 router.post("/movies/filter", MoviesRoutes.filter);
+router.post("/movies/filterData", MoviesRoutes.filterData);
 module.exports = router;

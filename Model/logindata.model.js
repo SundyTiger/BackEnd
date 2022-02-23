@@ -12,6 +12,14 @@ const dphschema = new mongoose.Schema({
   WatchList: {
     type: Array,
   },
+  isFree: {
+    type: Boolean,
+    default: true,
+  },
+  isPremium: {
+    type: Boolean,
+    default: false,
+  },
 });
 const UserPass = mongoose.model("UserInfo", dphschema);
 async function createUser(email, password) {

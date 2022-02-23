@@ -2,6 +2,7 @@ const {
   getMovies,
   addMovies,
   filterMovie,
+  filterData,
 } = require("../Model/moviesmodel.model");
 const { verify } = require("../Authentication/authorization");
 const { verifyAdmin } = require("../Authentication/adminAuthorization");
@@ -67,6 +68,19 @@ class Movies {
     try {
       const data = req.body;
       const filterData = await filterMovie(data);
+      res.status(200).json({
+        filterData,
+      });
+    } catch (e) {
+      res.status(400).json({
+        message: "Filtering Error: " + e,
+      });
+    }
+  }
+  async filterData(req, res) {
+    try {
+      const data = req.body;
+      const filterData = await filterData(data);
       res.status(200).json({
         filterData,
       });
